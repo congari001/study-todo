@@ -5,6 +5,10 @@ class ClassElement extends ClassBase {
         this._element_assets.parent = null;
         this._element_assets.element = document.createElement(tag);
         this._element_assets.childList = [];
+        this._element_assets.events = {};
+        // 管理下のエレメントからのイベントを割り当てる
+        this._element_assets.events.click = [];
+        this._element_assets.element.addEventListener('click', this._listen.bind(this, 'click'));
     }
     // エレメントを取得する
     get element() {
@@ -19,12 +23,12 @@ class ClassElement extends ClassBase {
         return this._element_assets.childList;
     }
     // 子を追加する
-    appendChild(classDiv, pos) {
-        classDiv._element_assets.parent = this;
+    appendChild(classElement, pos) {
+        classElement._element_assets.parent = this;
         pos = typeof pos === 'undefined' ? this.childList.length: parseInt(pos);
         let lef  = this.childList[pos] || null;
-        this._element_assets.childList.splice(pos, 0, classDiv);
-        this.element.insertBefore(classDiv.element, lef);
+        this._element_assets.childList.splice(pos, 0, classElement);
+        this.element.insertBefore(classElement.element, lef);
     }
     // 子を取り出す
     removeChild(pos) {
@@ -71,6 +75,41 @@ class ClassElement extends ClassBase {
             if (i >= limit) {
                 throw new Error('イベント伝播階層が深すぎます。');
             }
+        }
+    }
+    // クリックイベントの登録
+    onClick(func) {
+        this._on('click', func);
+    }
+    // クリックイベントの削除
+    offClick(func) {
+        this._off('click', func);
+    }
+
+    // 管理下エレメントからのイベントを受け付ける
+    _listen(ev_name, event) {
+        for (let i=0; i<this._element_assets.events[ev_name].length; i++) {
+            this._element_assets.events[ev_name][i](...[event, this]);
+        }
+    }
+    // 管理下エレメントからのイベント用処理の登録
+    _on(ev_name, func) {
+        if (typeof func !== 'function') {
+            throw new Error("イベントには関数を登録してください。");
+        }
+        this._element_assets.events[ev_name].push(func);
+    }
+    // 管理下エレメントからのイベント用処理の削除
+    _off(ev_name, func) {
+        if (typeof func === 'function') {
+            for (let i=0; i<this._element_assets.events[ev_name].length; i++) {
+                if (this._element_assets.events[ev_name][i] === func) {
+                    this._element_assets.events[ev_name].splice(i, 1);
+                    i--;
+                }
+            }
+        } else {
+            this._element_assets.events[ev_name] = [];
         }
     }
 }

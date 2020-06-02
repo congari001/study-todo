@@ -35,21 +35,21 @@
             });
             // でぶ１ノード設定
             div1.appendChild(span1);
-            div1.element.addEventListener("click", ((self) => {
+            div1.onClick((event, self) => {
                 console.log("くりっく　いっち");
                 console.log("オブジェクトにイベント発行");
                 self.emit("object event");
-            }).bind(null, div1));
+            });
             div1.on("object event", () => {
                 console.log("でぶ１オブジェクトでイベント受け取ったよ");
             });
             // でぶ２の１ノード設定
             div21.appendChild(span21);
-            div21.element.addEventListener("click", ((self) => {
+            div21.onClick((event, self) => {
                 console.log("くりっく　にぃいいっち");
                 console.log("オブジェクトにイベント発行");
                 self.emit("object event", {abc:"aaaaaaaaaaaaaaaaaa"});
-            }).bind(null, div21));
+            });
             // テキストいっち設定
             span1.element.innerHTML = "いっち";
             // テキストにぃいいっち設定
