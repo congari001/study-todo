@@ -26,7 +26,7 @@ class ClassElement extends ClassBase {
     appendChild(classElement, pos) {
         classElement._element_assets.parent = this;
         pos = typeof pos === 'undefined' ? this.childList.length: parseInt(pos);
-        let lef  = this.childList[pos] || null;
+        let lef  = this.childList[pos] && this.childList[pos].element || null;
         this._element_assets.childList.splice(pos, 0, classElement);
         this.element.insertBefore(classElement.element, lef);
     }
@@ -56,6 +56,15 @@ class ClassElement extends ClassBase {
             this.element.removeChild(child.element);
             return child;
         }
+    }
+    // 子を検索する
+    findChild(func) {
+        for (let i=0;i<this.childList.length; i++) {
+            if (func(this.childList[i])) {
+                return i;
+            }
+        }
+        return null;
     }
     // イベントの伝播に対応したイベント発行
     emit(ev_name, params, bubbling) {
