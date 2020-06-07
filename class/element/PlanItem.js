@@ -1,13 +1,14 @@
 class ClassPlanItem extends ClassElement {
     constructor(task) {
         super("div");
-        this._id = task.id;
-        this._textElement = this._createText(task.text);
-        this._doneBtnElement = this._createDoneButton();
-        this._deleteBtnElement = this._createDeleteButton();
-        this.appendChild(this._textElement);
-        this.appendChild(this._doneBtnElement);
-        this.appendChild(this._deleteBtnElement);
+        this._plan_item_assets = {};
+        this._plan_item_assets.id = task.id;
+        this._plan_item_assets.textElement = this._createText(task.text);
+        this._plan_item_assets.doneBtnElement = this._createDoneButton();
+        this._plan_item_assets.deleteBtnElement = this._createDeleteButton();
+        this.appendChild(this._plan_item_assets.textElement);
+        this.appendChild(this._plan_item_assets.doneBtnElement);
+        this.appendChild(this._plan_item_assets.deleteBtnElement);
     }
     _createText(text) {
         let ele = new ClassElement("span");
@@ -18,7 +19,7 @@ class ClassPlanItem extends ClassElement {
         let ele = new ClassElement("button");
         ele.element.innerText = "完了";
         ele.onClick((event, self) => {
-            self.emit("report_done_plan_item", {id:self.parent._id});
+            self.emit("report_done_plan_item", {id:self.parent.id});
         });
         return ele;
     }
@@ -26,11 +27,11 @@ class ClassPlanItem extends ClassElement {
         let ele = new ClassElement("button");
         ele.element.innerText = "削除";
         ele.onClick((event, self) => {
-            self.emit("report_delete_plan_item", {id:self.parent._id});
+            self.emit("report_delete_plan_item", {id:self.parent.id});
         });
         return ele;
     }
     get id() {
-        return this._id;
+        return this._plan_item_assets.id;
     }
 }
