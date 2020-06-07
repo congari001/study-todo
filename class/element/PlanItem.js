@@ -1,12 +1,12 @@
-class ClassDoneItem extends ClassElement {
+class ClassPlanItem extends ClassElement {
     constructor(task) {
         super("div");
         this._id = task.id;
         this._textElement = this._createText(task.text);
-        this._restoreBtnElement = this._createRestoreButton();
+        this._doneBtnElement = this._createDoneButton();
         this._deleteBtnElement = this._createDeleteButton();
         this.appendChild(this._textElement);
-        this.appendChild(this._restoreBtnElement);
+        this.appendChild(this._doneBtnElement);
         this.appendChild(this._deleteBtnElement);
     }
     _createText(text) {
@@ -14,11 +14,11 @@ class ClassDoneItem extends ClassElement {
         ele.element.innerText = text;
         return ele;
     }
-    _createRestoreButton() {
+    _createDoneButton() {
         let ele = new ClassElement("button");
-        ele.element.innerText = "戻す";
+        ele.element.innerText = "完了";
         ele.onClick((event, self) => {
-            self.emit("report_restore_done_item", {id:self.parent._id});
+            self.emit("report_done_plan_item", {id:self.parent._id});
         });
         return ele;
     }
@@ -26,7 +26,7 @@ class ClassDoneItem extends ClassElement {
         let ele = new ClassElement("button");
         ele.element.innerText = "削除";
         ele.onClick((event, self) => {
-            self.emit("report_delete_done_item", {id:self.parent._id});
+            self.emit("report_delete_plan_item", {id:self.parent._id});
         });
         return ele;
     }

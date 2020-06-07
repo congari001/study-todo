@@ -4,6 +4,8 @@
         </style>
         <script type='text/javascript' src="class/Base.js"></script>
         <script type='text/javascript' src="class/Element.js"></script>
+        <script type='text/javascript' src="class/element/PlanList.js"></script>
+        <script type='text/javascript' src="class/element/PlanItem.js"></script>
         <script type='text/javascript' src="class/element/DoneList.js"></script>
         <script type='text/javascript' src="class/element/DoneItem.js"></script>
         <script type='text/javascript' src="class/TaskData.js"></script>
@@ -38,75 +40,59 @@
              *   }
              * }
              */
-            let dl = new ClassDoneList();
+            let dl = new ClassPlanList();
             document.getElementById("base").appendChild(dl.element);
 
-            setTimeout(() => {
-                let task = new ClassTaskData({id:1, text: "！", status: ClassTaskData.STATUS_DONE});
-                let di = new ClassDoneItem(task.get());
-                dl.emit('operate_add_item', {doneItem: di}, false);
-                setTimeout(() => {
-                    let task =  new ClassTaskData({id:2, text: "！", status: ClassTaskData.STATUS_DONE});
-                    let di = new ClassDoneItem(task.get());
-                    dl.emit('operate_add_item', {doneItem: di}, false);
+            // 時間差でタスク追加するやつ
+            let addTask = (task) => {
+                return new Promise((resolve) => {
+                    console.log(`id:${task.id}のタスクが発生！`);
                     setTimeout(() => {
-                        let task =  new ClassTaskData({id:3, text: "！", status: ClassTaskData.STATUS_DONE});
-                        let di = new ClassDoneItem(task.get());
-                        dl.emit('operate_add_item', {doneItem: di}, false);
-                        setTimeout(() => {
-                            let task =  new ClassTaskData({id:4, text: "拳", status: ClassTaskData.STATUS_DONE});
-                            let di = new ClassDoneItem(task.get());
-                            dl.emit('operate_add_item', {doneItem: di}, false);
-                            setTimeout(() => {
-                                let task =  new ClassTaskData({id:5, text: "動", status: ClassTaskData.STATUS_DONE});
-                                let di = new ClassDoneItem(task.get());
-                                dl.emit('operate_add_item', {doneItem: di}, false);
-                                setTimeout(() => {
-                                    let task =  new ClassTaskData({id:6, text: "波", status: ClassTaskData.STATUS_DONE});
-                                    let di = new ClassDoneItem(task.get());
-                                    dl.emit('operate_add_item', {doneItem: di}, false);
-                                    setTimeout(() => {
-                                        let task =  new ClassTaskData({id:7, text: "ク", status: ClassTaskData.STATUS_DONE});
-                                        let di = new ClassDoneItem(task.get());
-                                        dl.emit('operate_add_item', {doneItem: di}, false);
-                                        setTimeout(() => {
-                                            let task =  new ClassTaskData({id:8, text: "ッ", status: ClassTaskData.STATUS_DONE});
-                                            let di = new ClassDoneItem(task.get());
-                                            dl.emit('operate_add_item', {doneItem: di}, false);
-                                            setTimeout(() => {
-                                                let task =  new ClassTaskData({id:9, text: "バ", status: ClassTaskData.STATUS_DONE});
-                                                let di = new ClassDoneItem(task.get());
-                                                dl.emit('operate_add_item', {doneItem: di}, false);
-                                                setTimeout(() => {
-                                                    let task =  new ClassTaskData({id:10, text: "ル", status: ClassTaskData.STATUS_DONE});
-                                                    let di = new ClassDoneItem(task.get());
-                                                    dl.emit('operate_add_item', {doneItem: di}, false);
-                                                    setTimeout(() => {
-                                                        let task =  new ClassTaskData({id:11, text: "ー", status: ClassTaskData.STATUS_DONE});
-                                                        let di = new ClassDoneItem(task.get());
-                                                        dl.emit('operate_add_item', {doneItem: di}, false);
-                                                        setTimeout(() => {
-                                                            let task =  new ClassTaskData({id:12, text: "コ", status: ClassTaskData.STATUS_DONE});
-                                                            let di = new ClassDoneItem(task.get());
-                                                            dl.emit('operate_add_item', {doneItem: di}, false);
-                                                            setTimeout(() => {
-                                                                dl.emit('operate_delete_item', {id: 4}, false);
-                                                                dl.emit('operate_delete_item', {id: 5}, false);
-                                                                dl.emit('operate_delete_item', {id: 6}, false);
-                                                                dl.emit('operate_delete_item', {id: 9999}, false);
-                                                            });
-                                                        }, 500);
-                                                    }, 500);
-                                                }, 500);
-                                            }, 500);
-                                        }, 500);
-                                    }, 500);
-                                }, 500);
-                            }, 500);
-                        }, 500);
+                        console.log(`500ms経過したからid:${task.id}のタスク追加！`);
+                        let pi = new ClassPlanItem(task);
+                        dl.emit('operate_add_item', { newItem: pi}, false);
+                        resolve();
                     }, 500);
-                }, 500);
-            }, 500);
+                });
+            }
+            // 時間差でタスク消すやつ
+            let delTask = (id) => {
+                return new Promise((resolve) => {
+                    console.log(`id:${id}のタスクを消すよ！`);
+                    setTimeout(() => {
+                        console.log(`1000ms経過したからid:${id}のタスク消したった`);
+                        dl.emit('operate_delete_item', {id: id}, false);
+                        resolve();
+                    }, 1000);
+                });
+            }
+            // 時間差だけど時間差を感じさせない、そんな感じのなにか
+            let asyncLoop = async () => {
+                let tasks = [
+                    new ClassTaskData({id: 1, text: "！", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id: 2, text: "！", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id: 3, text: "！", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id: 4, text: "拳", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id: 5, text: "動", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id: 6, text: "波", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id: 7, text: "ク", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id: 8, text: "ッ", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id: 9, text: "バ", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id:10, text: "ル", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id:11, text: "ー", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id:12, text: "コ", status: ClassTaskData. STATUS_PLAN}),
+                ];
+                for (let i=0; i<tasks.length; i++) {
+                    await addTask(tasks[i].get());
+                }
+                let dels = [4,5,6];
+                for (let i=0; i<dels.length; i++) {
+                    await delTask(dels[i]);
+                }
+            }
+            console.log("プロミスります");
+            asyncLoop();
+            console.log("プロミスった");
         </script>
     </body>
 </html>
