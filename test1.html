@@ -69,18 +69,18 @@
             // 時間差だけど時間差を感じさせない、そんな感じのなにか
             let asyncLoop = async () => {
                 let tasks = [
-                    new ClassTaskData({id: 1, text: "！", status: ClassTaskData. STATUS_PLAN}),
-                    new ClassTaskData({id: 2, text: "！", status: ClassTaskData. STATUS_PLAN}),
-                    new ClassTaskData({id: 3, text: "！", status: ClassTaskData. STATUS_PLAN}),
-                    new ClassTaskData({id: 4, text: "拳", status: ClassTaskData. STATUS_PLAN}),
-                    new ClassTaskData({id: 5, text: "動", status: ClassTaskData. STATUS_PLAN}),
-                    new ClassTaskData({id: 6, text: "波", status: ClassTaskData. STATUS_PLAN}),
-                    new ClassTaskData({id: 7, text: "ク", status: ClassTaskData. STATUS_PLAN}),
-                    new ClassTaskData({id: 8, text: "ッ", status: ClassTaskData. STATUS_PLAN}),
-                    new ClassTaskData({id: 9, text: "バ", status: ClassTaskData. STATUS_PLAN}),
-                    new ClassTaskData({id:10, text: "ル", status: ClassTaskData. STATUS_PLAN}),
-                    new ClassTaskData({id:11, text: "ー", status: ClassTaskData. STATUS_PLAN}),
-                    new ClassTaskData({id:12, text: "コ", status: ClassTaskData. STATUS_PLAN}),
+                    new ClassTaskData({id: 1, text: "！", status: ClassTaskData.STATUS_PLAN}),
+                    new ClassTaskData({id: 2, text: "！", status: ClassTaskData.STATUS_PLAN}),
+                    new ClassTaskData({id: 3, text: "！", status: ClassTaskData.STATUS_PLAN}),
+                    new ClassTaskData({id: 4, text: "拳", status: ClassTaskData.STATUS_PLAN}),
+                    new ClassTaskData({id: 5, text: "動", status: ClassTaskData.STATUS_PLAN}),
+                    new ClassTaskData({id: 6, text: "波", status: ClassTaskData.STATUS_PLAN}),
+                    new ClassTaskData({id: 7, text: "ク", status: ClassTaskData.STATUS_PLAN}),
+                    new ClassTaskData({id: 8, text: "ッ", status: ClassTaskData.STATUS_PLAN}),
+                    new ClassTaskData({id: 9, text: "バ", status: ClassTaskData.STATUS_PLAN}),
+                    new ClassTaskData({id:10, text: "ル", status: ClassTaskData.STATUS_PLAN}),
+                    new ClassTaskData({id:11, text: "ー", status: ClassTaskData.STATUS_PLAN}),
+                    new ClassTaskData({id:12, text: "コ", status: ClassTaskData.STATUS_PLAN}),
                 ];
                 for (let i=0; i<tasks.length; i++) {
                     await addTask(tasks[i].get());
