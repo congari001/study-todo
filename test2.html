@@ -5,6 +5,8 @@
         <script type='text/javascript' src="class/Base.js"></script>
         <script type='text/javascript' src="class/Element.js"></script>
         <script type='text/javascript' src="class/element/ViewArea.js"></script>
+        <script type='text/javascript' src="class/element/InputArea.js"></script>
+        <script type='text/javascript' src="class/element/AddForm.js"></script>
         <script type='text/javascript' src="class/element/PlanList.js"></script>
         <script type='text/javascript' src="class/element/PlanItem.js"></script>
         <script type='text/javascript' src="class/element/DoneList.js"></script>
@@ -54,11 +56,17 @@
             let todo = new ClassElement('div');
             document.getElementById("base").appendChild(todo.element);
             {
+                // id管理
+                let maxId = Object.keys(datas).reduce((acc, cur) => acc>cur ? acc: cur);
+                console.log(maxId);
                 // todoリストの生成
+                let af = new ClassAddForm();
+                let ia = new ClassInputArea(af);
                 let pl = new ClassPlanList();
                 let dl = new ClassDoneList();
                 let va = new ClassViewArea(pl, dl);
                 // todoリストに初期データをセット
+                todo.appendChild(ia);
                 todo.appendChild(va);
                 for (let i in datas) {
                     let data = datas[i].get();
@@ -77,6 +85,21 @@
                     }
                 }
                 // イベント処理
+                // 新しい計画を追加する
+                todo.on("report_add_plan_item", (event) => {
+                    let input, data, item;
+                    // 新規データ作成と登録
+                    input = af.getInput();
+                    af.initInput();
+                    data = {};
+                    data.id = ++maxId;
+                    data.text = input.text;
+                    data.status = ClassTaskData.STATUS_PLAN;
+                    datas[data.id] = new ClassTaskData(data);
+                    // 計画リストにタスク追加
+                    item = new ClassPlanItem(data);
+                    pl.emit("operate_add_item", {newItem: item}, false);
+                });
                 // 計画リストから完了リストへ移す
                 todo.on("report_done_plan_item", (event) => {
                     let data, item;
