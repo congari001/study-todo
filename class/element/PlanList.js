@@ -1,16 +1,19 @@
 class ClassPlanList extends ClassElement {
     constructor() {
         super();
-        this.on('operate_add_item', (event) => {
-            let newItem = event.detail.newItem;
-            this.appendChild(newItem, 0);
-        });
-        this.on('operate_delete_item', (event) => {
-            let targetId = event.detail.id;
-            let pos;
-            while ((pos = this.findChild(v => v.id == targetId)) !== null) {
-                this.removeChild(pos);
-            }
-        });
+    }
+    // アイテム追加
+    addItem(data) {
+        let item= new ClassPlanItem(data);
+        this.appendChild(item, 0);
+    }
+    // アイテム削除
+    deleteItem(id) {
+        let pos, cnt=0;
+        while ((pos = this.findChild(v => v.id == id)) !== null) {
+            this.removeChild(pos);
+            cnt++;
+        }
+        return cnt;
     }
 }

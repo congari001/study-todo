@@ -72,12 +72,10 @@
                     let data = datas[i].get();
                     switch(data.status) {
                         case ClassTaskData.STATUS_PLAN:
-                            item = new ClassPlanItem(data);
-                            pl.emit("operate_add_item", {newItem: item}, false);
+                            pl.addItem(data);
                         break;
                         case ClassTaskData.STATUS_DONE:
-                            item = new ClassDoneItem(data);
-                            dl.emit("operate_add_item", {doneItem: item}, false);
+                            dl.addItem(data);
                         break;
                         default:
                             throw new Error(`指定されたステータス${data.status}が不正です。`);
@@ -88,17 +86,17 @@
                 // 新しい計画を追加する
                 todo.on("report_add_plan_item", (event) => {
                     let input, data, item;
-                    // 新規データ作成と登録
+                    // 新規データ作成
                     input = af.getInput();
                     af.initInput();
                     data = {};
                     data.id = ++maxId;
                     data.text = input.text;
                     data.status = ClassTaskData.STATUS_PLAN;
-                    datas[data.id] = new ClassTaskData(data);
                     // 計画リストにタスク追加
-                    item = new ClassPlanItem(data);
-                    pl.emit("operate_add_item", {newItem: item}, false);
+                    pl.addItem(data);
+                    // 新規データ登録
+                    datas[data.id] = new ClassTaskData(data);
                 });
                 // 計画リストから完了リストへ移す
                 todo.on("report_done_plan_item", (event) => {
@@ -107,21 +105,21 @@
                     // データのステータス更新
                     data = datas[targetId].get();
                     data.status = ClassTaskData.STATUS_DONE;
-                    datas[targetId].set(data);
-                    console.log(datas);
                     // タスクの移動
-                    item = new ClassDoneItem(data);
-                    pl.emit("operate_delete_item", {id: targetId}, false);
-                    dl.emit("operate_add_item", {doneItem: item}, false);
+                    if (!pl.deleteItem(targetId) ) {
+                        throw new Error(`指定のID[${targetId}]は計画リストに存在しません。`);
+                    }
+                    dl.addItem(data);
+                    // 更新データの確定
+                    datas[targetId].set(data);
                 });
                 // 計画リストから削除する
                 todo.on("report_delete_plan_item", (event) => {
                     let targetId = event.detail.id;
+                    // タスクの削除
+                    pl.deleteItem(targetId);
                     // データの削除
                     delete datas[targetId];
-                    console.log(datas);
-                    // タスクの削除
-                    pl.emit("operate_delete_item", {id: targetId}, false);
                 });
                 // 完了リストから計画リストへ戻す
                 todo.on("report_restore_done_item", (event) => {
@@ -130,21 +128,21 @@
                     // データのステータス更新
                     data = datas[targetId].get();
                     data.status = ClassTaskData.STATUS_PLAN;
-                    datas[targetId].set(data);
-                    console.log(datas);
                     // タスクの移動
-                    item = new ClassPlanItem(data);
-                    pl.emit("operate_add_item", {newItem: item}, false);
-                    dl.emit("operate_delete_item", {id: targetId}, false);
+                    if (!dl.deleteItem(targetId) ) {
+                        throw new Error(`指定のID[${targetId}]は完了リストに存在しません。`);
+                    }
+                    pl.addItem(data);
+                    // 更新データの確定
+                    datas[targetId].set(data);
                 });
                 // 完了リストから削除する
                 todo.on("report_delete_done_item", (event) => {
                     let targetId = event.detail.id;
+                    // タスクの削除
+                    dl.deleteItem(targetId);
                     // データの削除
                     delete datas[targetId];
-                    console.log(datas);
-                    // タスクの削除
-                    dl.emit("operate_delete_item", {id: targetId}, false);
                 });
             }
         </script>

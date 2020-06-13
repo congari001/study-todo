@@ -1,16 +1,19 @@
 class ClassDoneList extends ClassElement {
     constructor() {
         super();
-        this.on('operate_add_item', (event) => {
-            let doneItem = event.detail.doneItem;
-            this.appendChild(doneItem, 0);
-        });
-        this.on('operate_delete_item', (event) => {
-            let targetId = event.detail.id;
-            let pos;
-            while ((pos = this.findChild(v => v.id == targetId)) !== null) {
-                this.removeChild(pos);
-            }
-        });
+    }
+    // アイテム追加
+    addItem(data) {
+        let item= new ClassDoneItem(data);
+        this.appendChild(item, 0);
+    }
+    // アイテム削除
+    deleteItem(id) {
+        let pos, cnt=0;
+        while ((pos = this.findChild(v => v.id == id)) !== null) {
+            this.removeChild(pos);
+            cnt++;
+        }
+        return cnt;
     }
 }

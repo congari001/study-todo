@@ -1,11 +1,11 @@
 class ClassAddForm extends ClassElement {
     constructor() {
         super("div");
-        this._plan_item_assets = {};
-        this._plan_item_assets.textElement = this._createText();
-        this._plan_item_assets.addBtnElement = this._createAddButton();
-        this.appendChild(this._plan_item_assets.textElement);
-        this.appendChild(this._plan_item_assets.addBtnElement);
+        this._add_form_assets = {};
+        this._add_form_assets.textElement = this._createText();
+        this._add_form_assets.addBtnElement = this._createAddButton();
+        this.appendChild(this._add_form_assets.textElement);
+        this.appendChild(this._add_form_assets.addBtnElement);
         // 入力値の初期化
         this.initInput();
     }
@@ -26,11 +26,11 @@ class ClassAddForm extends ClassElement {
     // 入力値の取得
     getInput() {
         let item = {};
-        item.text = this._plan_item_assets.textElement.element.value;
+        item.text = this._add_form_assets.textElement.element.value;
         return item;
     }
     // 入力値の初期化
     initInput() {
-        this._plan_item_assets.textElement.element.value = "";
+        this._add_form_assets.textElement.element.value = "";
     }
 }
