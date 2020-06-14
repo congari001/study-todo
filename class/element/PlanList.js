@@ -3,9 +3,10 @@ class ClassPlanList extends ClassElement {
         super();
     }
     // アイテム追加
-    addItem(data) {
+    addItem(data, pos) {
+        pos = pos || 0;
         let item= new ClassPlanItem(data);
-        this.appendChild(item, 0);
+        this.appendChild(item, pos);
     }
     // アイテム削除
     deleteItem(id) {
