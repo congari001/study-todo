@@ -149,11 +149,11 @@
                 todo.on("report_delete_plan_item", (event) => {
                     (async () => {
                         let targetId = event.detail.id;
-                        // タスクの削除
-                        pl.deleteItem(targetId);
-                        await save(dataKey, datas);
                         // データの削除
                         delete datas[targetId];
+                        await save(dataKey, datas);
+                        // タスクの削除
+                        pl.deleteItem(targetId);
                     })();
                 });
                 // 完了リストから計画リストへ戻す
