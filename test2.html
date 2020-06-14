@@ -1,7 +1,6 @@
 <html>
     <head>
-        <style type="text/css">
-        </style>
+        <link rel="stylesheet" type="text/css" href="css/loader.css">
         <script type='text/javascript' src="class/Base.js"></script>
         <script type='text/javascript' src="class/Element.js"></script>
         <script type='text/javascript' src="class/element/ViewArea.js"></script>
@@ -12,6 +11,7 @@
         <script type='text/javascript' src="class/element/DoneList.js"></script>
         <script type='text/javascript' src="class/element/DoneItem.js"></script>
         <script type='text/javascript' src="class/TaskData.js"></script>
+        <script type='text/javascript' src="class/Storage.js"></script>
     </head>
     <body>
         <div id="base"></div>
@@ -43,21 +43,47 @@
              *   }
              * }
              */
-            // DBとかから取ってくる想定のデータ
-            let datas = {};
-            datas[1] = new ClassTaskData({id:1, text:"い", status: 1});
-            datas[2] = new ClassTaskData({id:2, text:"ろ", status: 1});
-            datas[3] = new ClassTaskData({id:3, text:"は", status: 1});
-            datas[4] = new ClassTaskData({id:4, text:"に", status: 2});
-            datas[5] = new ClassTaskData({id:5, text:"ほ", status: 2});
-            datas[6] = new ClassTaskData({id:6, text:"へ", status: 1});
-            datas[7] = new ClassTaskData({id:7, text:"と", status: 2});
+            //// DBとかから取ってくる想定のデータ
+            //let datas = {};
+            //datas[1] = new ClassTaskData({id:1, text:"い", status: 1});
+            //datas[2] = new ClassTaskData({id:2, text:"ろ", status: 1});
+            //datas[3] = new ClassTaskData({id:3, text:"は", status: 1});
+            //datas[4] = new ClassTaskData({id:4, text:"に", status: 2});
+            //datas[5] = new ClassTaskData({id:5, text:"ほ", status: 2});
+            //datas[6] = new ClassTaskData({id:6, text:"へ", status: 1});
+            //datas[7] = new ClassTaskData({id:7, text:"と", status: 2});
             // なんちゃってtodoManager
             let todo = new ClassElement('div');
             document.getElementById("base").appendChild(todo.element);
-            {
+            (async () => {
+                // データ管理処理
+                let data, datas;
+                let storage = new ClassStorage();
+                let dataKey = "todo-001";
+                async function load(dataKey) {
+                    let obj, datas;
+                    datas = {};
+                    try {
+                        obj = JSON.parse(await storage.getItem(dataKey));
+                        Object.keys(obj).forEach(key => {
+                            datas[key] = new ClassTaskData(obj[key]);
+                        });
+                    }catch(e) {
+                        console.log(e.message);
+                    }
+                    return datas;
+                }
+                async function save(dataKey, datas) {
+                    let obj = {};
+                    Object.keys(datas).forEach(key => {
+                        obj[key] = datas[key].get();
+                    });
+                    await storage.setItem(dataKey, JSON.stringify(obj));
+                }
+                // データ取得
+                datas = await load(dataKey);
                 // id管理
-                let maxId = Object.keys(datas).reduce((acc, cur) => acc>cur ? acc: cur);
+                let maxId = Object.keys(datas).reduce((acc, cur) => acc>cur ? acc: cur, 0);
                 console.log(maxId);
                 // todoリストの生成
                 let af = new ClassAddForm();
@@ -85,66 +111,81 @@
                 // イベント処理
                 // 新しい計画を追加する
                 todo.on("report_add_plan_item", (event) => {
-                    let input, data, item;
-                    // 新規データ作成
-                    input = af.getInput();
-                    af.initInput();
-                    data = {};
-                    data.id = ++maxId;
-                    data.text = input.text;
-                    data.status = ClassTaskData.STATUS_PLAN;
-                    // 計画リストにタスク追加
-                    pl.addItem(data);
-                    // 新規データ登録
-                    datas[data.id] = new ClassTaskData(data);
+                    (async () => {
+                        let input, data, item;
+                        // 新規データ作成
+                        input = af.getInput();
+                        af.initInput();
+                        data = {};
+                        data.id = ++maxId;
+                        data.text = input.text;
+                        data.status = ClassTaskData.STATUS_PLAN;
+                        // 新規データ登録
+                        datas[data.id] = new ClassTaskData(data);
+                        await save(dataKey, datas);
+                        // 計画リストにタスク追加
+                        pl.addItem(data);
+                    })();
                 });
                 // 計画リストから完了リストへ移す
                 todo.on("report_done_plan_item", (event) => {
-                    let data, item;
-                    let targetId = event.detail.id;
-                    // データのステータス更新
-                    data = datas[targetId].get();
-                    data.status = ClassTaskData.STATUS_DONE;
-                    // タスクの移動
-                    if (!pl.deleteItem(targetId) ) {
-                        throw new Error(`指定のID[${targetId}]は計画リストに存在しません。`);
-                    }
-                    dl.addItem(data);
-                    // 更新データの確定
-                    datas[targetId].set(data);
+                    (async () => {
+                        let data, item;
+                        let targetId = event.detail.id;
+                        // データのステータス更新
+                        data = datas[targetId].get();
+                        data.status = ClassTaskData.STATUS_DONE;
+                        // 更新データの確定
+                        datas[targetId].set(data);
+                        await save(dataKey, datas);
+                        // タスクの移動
+                        if (!pl.deleteItem(targetId) ) {
+                            throw new Error(`指定のID[${targetId}]は計画リストに存在しません。`);
+                        }
+                        dl.addItem(data);
+                    })();
                 });
                 // 計画リストから削除する
                 todo.on("report_delete_plan_item", (event) => {
-                    let targetId = event.detail.id;
-                    // タスクの削除
-                    pl.deleteItem(targetId);
-                    // データの削除
-                    delete datas[targetId];
+                    (async () => {
+                        let targetId = event.detail.id;
+                        // タスクの削除
+                        pl.deleteItem(targetId);
+                        await save(dataKey, datas);
+                        // データの削除
+                        delete datas[targetId];
+                    })();
                 });
                 // 完了リストから計画リストへ戻す
                 todo.on("report_restore_done_item", (event) => {
-                    let data, item;
-                    let targetId = event.detail.id;
-                    // データのステータス更新
-                    data = datas[targetId].get();
-                    data.status = ClassTaskData.STATUS_PLAN;
-                    // タスクの移動
-                    if (!dl.deleteItem(targetId) ) {
-                        throw new Error(`指定のID[${targetId}]は完了リストに存在しません。`);
-                    }
-                    pl.addItem(data);
-                    // 更新データの確定
-                    datas[targetId].set(data);
+                    (async () => {
+                        let data, item;
+                        let targetId = event.detail.id;
+                        // データのステータス更新
+                        data = datas[targetId].get();
+                        data.status = ClassTaskData.STATUS_PLAN;
+                        // 更新データの確定
+                        datas[targetId].set(data);
+                        await save(dataKey, datas);
+                        // タスクの移動
+                        if (!dl.deleteItem(targetId) ) {
+                            throw new Error(`指定のID[${targetId}]は完了リストに存在しません。`);
+                        }
+                        pl.addItem(data);
+                    })();
                 });
                 // 完了リストから削除する
                 todo.on("report_delete_done_item", (event) => {
-                    let targetId = event.detail.id;
-                    // タスクの削除
-                    dl.deleteItem(targetId);
-                    // データの削除
-                    delete datas[targetId];
+                    (async () => {
+                        let targetId = event.detail.id;
+                        // データの削除
+                        delete datas[targetId];
+                        await save(dataKey, datas);
+                        // タスクの削除
+                        dl.deleteItem(targetId);
+                    })();
                 });
-            }
+            })();
         </script>
     </body>
 </html>
