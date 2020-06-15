@@ -5,25 +5,33 @@ class ClassDataManager extends ClassBase {
         this._data_manager_assets.storage = storage;
         this._data_manager_assets.dataKey = dataKey;
         this._data_manager_assets.datas = null;
+        this._data_manager_assets.maxId = 0;
     }
     // データ読み込み
     async load() {
-        let arr, datas, dataKey, storage;
+        let maxId, arr, datas, dataKey, storage;
+        maxId = 0;
         storage = this._data_manager_assets.storage;
         dataKey = this._data_manager_assets.dataKey;
         datas = [];
         try {
             arr = JSON.parse(await storage.getItem(dataKey));
-            for(let i=0; i<arr.length; i++) {
-                if (typeof arr[i].id !== 'number') {
-                    continue;
+            if (Array.isArray(arr)) {
+                for(let i=0; i<arr.length; i++) {
+                    if (typeof arr[i].id !== 'number') {
+                        continue;
+                    }
+                    if (maxId<arr[i].id) {
+                        maxId = arr[i].id;
+                    }
+                    datas.push(new ClassTaskData(arr[i]));
                 }
-                datas.push(new ClassTaskData(arr[i]));
             }
         }catch(e) {
             console.log(e.message);
         }
         this._data_manager_assets.datas = datas;
+        this._data_manager_assets.maxId = maxId;
     }
     // データ保存
     async save() {
@@ -78,7 +86,11 @@ class ClassDataManager extends ClassBase {
     }
     // idの最大値取得
     get maxId() {
-        return this._data_manager_assets.datas.reduce((acc, cur) => acc>cur.get().id ? acc: cur.get().id, 0);
+        return this._data_manager_assets.maxId;
+    }
+    // 新しいidを発行する
+    get newId() {
+        return ++this._data_manager_assets.maxId;
     }
     // データの追加＆更新
     update(data) {

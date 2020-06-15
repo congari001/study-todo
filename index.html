@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="css/loader.css">
+        <script type='text/javascript' src="class/Base.js"></script>
+        <script type='text/javascript' src="class/Element.js"></script>
+        <script type='text/javascript' src="class/element/ToDoManager.js"></script>
+        <script type='text/javascript' src="class/element/ViewArea.js"></script>
+        <script type='text/javascript' src="class/element/InputArea.js"></script>
+        <script type='text/javascript' src="class/element/AddForm.js"></script>
+        <script type='text/javascript' src="class/element/PlanList.js"></script>
+        <script type='text/javascript' src="class/element/PlanItem.js"></script>
+        <script type='text/javascript' src="class/element/DoneList.js"></script>
+        <script type='text/javascript' src="class/element/DoneItem.js"></script>
+        <script type='text/javascript' src="class/DataManager.js"></script>
+        <script type='text/javascript' src="class/data/TaskData.js"></script>
+        <script type='text/javascript' src="class/Storage.js"></script>
+    </head>
+    <body>
+        <div id="base"></div>
+        <script>
+            let todo = new ClassToDoManager('base');
+            todo.read('todo-001');
+        </script>
+    </body>
+</html>
