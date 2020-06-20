@@ -1,0 +1,235 @@
+.view_area {
+    display: flex;
+}
+/* 入力フォーム */
+.input_frame {
+    position: relative;
+    width: 400px;
+    height: 50px;
+    padding: 0.2em 0.5em;
+    margin: 1em;
+    background: #ccffcc;
+    box-shadow: 0px -1px 3px 10px #ccffcc;
+    border: dashed 2px #30f000;
+}
+.input_label {
+    position: absolute;
+    display: inline-block;
+    top: -10px;
+    left: 10px;
+    padding: 0 9px;
+    line-height: 1;
+    font-size: 19px;
+    background: #ccffcc;
+    color: #30f000;
+    font-weight: bold;
+}
+.input_text {
+    position: absolute;
+    top: 1.1em;
+    left: 1em;
+    padding: 0 11px 0 15px;
+    border: 2px solid #b5f3a9;
+    border-radius: 0.5em;
+    background-color: snow;
+    width: 250px;
+    height: 30px;
+    box-sizing: border-box;
+}
+.input_text:focus {
+    border: 2px solid #30f000;
+    outline: none;
+}
+/* 新規登録ボタン */
+.input_new_item_button {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    display: inline-block;
+    font-weight: bold;
+    padding: 0 11px 0 15px;
+    text-decoration: none;
+    color: #67c5ff;
+    transition: .4s;
+}
+.input_new_item_button:before {
+    position: absolute;
+    display: inline-block;
+    content: '';
+    width: 4px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 3px;
+    background:#67c5ff;
+}
+.input_new_item_button:after {
+    position: absolute;
+    display: inline-block;
+    content: '';
+    width: 4px;
+    height: 100%;
+    top:0;
+    left: 100%;
+    border-radius: 3px;
+    background:#67c5ff;
+}
+.input_new_item_button:hover:before, .input_new_item_button:hover:after {
+    -webkit-transform: rotate(10deg);
+    transform: rotate(10deg);
+}
+/* 計画リスト */
+.plan_frame {
+    position: relative;
+    min-height: 400px;
+    width: 400px;
+    padding: 0.2em 0.5em;
+    margin: 1em;
+    background: #d6ebff;
+    box-shadow: 0px -1px 3px 10px #d6ebff;
+    border: dashed 2px white;
+}
+.plan_label {
+    position: absolute;
+    display: inline-block;
+    top: -10px;
+    left: 10px;
+    padding: 0 9px;
+    line-height: 1;
+    font-size: 19px;
+    background: #d6ebff;
+    color: #95ccff;
+    font-weight: bold;
+}
+.plan_list {
+    margin: 1em 0 0;
+}
+/* 完了リスト */
+.done_frame {
+    position: relative;
+    min-height: 400px;
+    width: 400px;
+    padding: 0.2em 0.5em;
+    margin: 1em;
+    color: #565656;
+    background: #ffeaea;
+    box-shadow: 0px -1px 3px 10px #ffeaea;
+    border: dashed 2px #ffc3c3;
+}
+.done_label {
+    position: absolute;
+    display: inline-block;
+    top: -10px;
+    left: 10px;
+    padding: 0 9px;
+    line-height: 1;
+    font-size: 19px;
+    background: #ffeaea;
+    color: #ffc3c3;
+    font-weight: bold;
+}
+.done_list {
+    margin: 1em 0 0;
+}
+.list_item {
+    width: 100%;
+    height: 1em;
+    padding: .45em 0 .45em;
+    margin: .55em 0 .55em;
+    position: relative;
+}
+.list_item::after {
+    background-color: #eff7ff;
+    bottom: 0;
+    content: '';
+    display: block;
+    height: 1px;
+    left: 0;
+    position: absolute;
+    transition: .5s all;
+    width: 0;
+}
+.list_item:hover::after {
+    width: 100%;
+}
+.list_item_text {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+/* リストアイテムボタン（リスト移動） */
+.list_item_button1 {
+    position: absolute;
+    top: 0;
+    right: 4.6em;
+    display: inline-block;
+    font-weight: bold;
+    padding: 0 11px 0 15px;
+    text-decoration: none;
+    color: #67c5ff;
+    transition: .4s;
+}
+.list_item_button1:before {
+    position: absolute;
+    display: inline-block;
+    content: '';
+    width: 4px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 3px;
+    background:#67c5ff;
+}
+.list_item_button1:after {
+    position: absolute;
+    display: inline-block;
+    content: '';
+    width: 4px;
+    height: 100%;
+    top:0;
+    left: 100%;
+    border-radius: 3px;
+    background:#67c5ff;
+}
+.list_item_button1:hover:before, .list_item_button1:hover:after {
+    -webkit-transform: rotate(10deg);
+    transform: rotate(10deg);
+}
+/* リストアイテムボタン（削除） */
+.list_item_button2 {
+    position: absolute;
+    top: 0;
+    right: .4em;
+    display: inline-block;
+    font-weight: bold;
+    padding: 0 11px 0 15px;
+    text-decoration: none;
+    color: #ff6b6b;
+    transition: .4s;
+}
+.list_item_button2:before {
+    position: absolute;
+    display: inline-block;
+    content: '';
+    width: 4px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 3px;
+    background:#ff6b6b;
+}
+.list_item_button2:after {
+    position: absolute;
+    display: inline-block;
+    content: '';
+    width: 4px;
+    height: 100%;
+    top:0;
+    left: 100%;
+    border-radius: 3px;
+    background:#ff6b6b;
+}
+.list_item_button2:hover:before, .list_item_button2:hover:after {
+    -webkit-transform: rotate(10deg);
+    transform: rotate(10deg);
+}
