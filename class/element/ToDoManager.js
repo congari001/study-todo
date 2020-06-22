@@ -69,16 +69,26 @@ class ClassToDoManager extends ClassElement {
         this.on("report_delete_plan_item", this._reportDeletePlanItem.bind(this));
         this.on("report_restore_done_item", this._reportRestoreDoneItem.bind(this));
         this.on("report_delete_done_item", this._reportDeleteDoneItem.bind(this));
+        this.on("report_validation", this._reportValidation.bind(this));
     }
     // イベント用処理
     // 新しい計画を追加する
     async _reportAddPlanItem() {
-        let input, data, addForm, dataManager, planList;
+        let input, opt, check, data, addForm, dataManager, planList;
         addForm = this._todo_manager_assets.addForm;
         dataManager = this._todo_manager_assets.dataManager;
         planList = this._todo_manager_assets.planList;
-        // 新規データ作成
         input = addForm.getInput();
+        // 入力データ検証
+        opt = {};
+        opt.minNum = ClassAddForm.TEXT_MIN;
+        opt.maxNum = ClassAddForm.TEXT_MAX;
+        check = this._validation(input.text, 'str', opt);
+        if (check.error.length) {
+            addForm.validated(check);
+            return;
+        }
+        // 新規データ作成
         addForm.initInput();
         data = {};
         data.id = dataManager.newId;
@@ -153,5 +163,51 @@ class ClassToDoManager extends ClassElement {
         await dataManager.save();
         // タスクの削除
         doneList.deleteItem(targetId);
+    }
+    // 値をチェックする
+    _reportValidation(event) {
+        // 必須パラメータ
+        let val = event.detail.value;
+        let type = event.detail.type;
+        let cb = event.detail.callback;
+        // オプション
+        let opt = {};
+        opt.maxNum = typeof event.detail.maxNum === "undefined" ? null: event.detail.maxNum;
+        opt.minNum = typeof event.detail.minNum === "undefined" ? null: event.detail.minNum;
+        // 検証
+        let result = this._validation(val, type, opt);
+        return cb(result);
+    }
+
+    // util的なやつ
+    // 値の検証
+    _validation(val, type, option) {
+        // オプション設定の取得
+        option = option || {};
+        let maxNum = typeof option.maxNum === "undefined" ? null: option.maxNum;
+        let minNum = typeof option.minNum === "undefined" ? null: option.minNum;
+
+        let result = {};
+        result.error = [];
+        switch (type) {
+            case "str":
+                // 文字数のチェック
+                if (maxNum !== null) {
+                    if (val.length > maxNum) {
+                        result.error.push(`上限文字数[${maxNum}]を超えています。`);
+                    }
+                }
+                if (minNum !== null) {
+                    if (val.length < minNum) {
+                        result.error.push(`下限文字数[${minNum}]を下回っています。`);
+                    }
+                }
+            break;
+
+            default:
+                throw new Error(`指定されたtype[${type}]が不正です。`);
+            break;
+        }
+        return result;
     }
 }

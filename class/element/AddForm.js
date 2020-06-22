@@ -1,10 +1,15 @@
 class ClassAddForm extends ClassElement {
+    // 定数
+    static get TEXT_MIN() {return 1};
+    static get TEXT_MAX() {return 16};
+
     constructor() {
         super("div");
         this.element.classList.add("input_frame");
         this._add_form_assets = {};
         this._add_form_assets.labelElement = this._createLabel();
         this._add_form_assets.textElement = this._createText();
+        this._add_form_assets.attentionElement = this._createAttention();
         this._add_form_assets.addBtnElement = this._createAddButton();
         this.appendChild(this._add_form_assets.labelElement);
         this.appendChild(this._add_form_assets.textElement);
@@ -18,13 +23,27 @@ class ClassAddForm extends ClassElement {
         ele.element.innerText = "新規作業登録";
         return ele;
     }
-    _createText(text) {
+    _createText() {
         let ele = new ClassElement("input");
         ele.element.classList.add("input_text");
         ele.element.type = "text";
         ele.element.placeholder = "Input new task...";
-        //ele.element.setAttribute("type", "text");
         ele.element.value = "";
+        ele.onChange((event, self) => {
+            let params = {};
+            params.value = self.element.value;
+            params.type = "str";
+            params.callback = self.parent.validated.bind(self.parent);
+            params.minNum = ClassAddForm.TEXT_MIN;
+            params.maxNum = ClassAddForm.TEXT_MAX;
+            self.emit("report_validation", params);
+        });
+        return ele;
+    }
+    _createAttention() {
+        let ele = new ClassElement("a");
+        ele.element.classList.add("input_attention");
+        ele.element.innerText = "＊";
         return ele;
     }
     _createAddButton() {
@@ -45,5 +64,16 @@ class ClassAddForm extends ClassElement {
     // 入力値の初期化
     initInput() {
         this._add_form_assets.textElement.element.value = "";
+    }
+    // 値の検証結果を表示
+    validated(result) {
+        this.removeChild(this._add_form_assets.attentionElement);
+        if (result.error.length) {
+            this.appendChild(this._add_form_assets.attentionElement);
+        }
+    }
+    // 検証結果の削除
+    removeAttention() {
+        this.removeChild(this._add_form_assets.attentionElement);
     }
 }

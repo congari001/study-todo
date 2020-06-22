@@ -9,6 +9,8 @@ class ClassElement extends ClassBase {
         // 管理下のエレメントからのイベントを割り当てる
         this._element_assets.events.click = [];
         this._element_assets.element.addEventListener('click', this._listen.bind(this, 'click'));
+        this._element_assets.events.change = [];
+        this._element_assets.element.addEventListener('change', this._listen.bind(this, 'change'));
     }
     // エレメントを取得する
     get element() {
@@ -44,6 +46,16 @@ class ClassElement extends ClassBase {
                 throw new Error("コードがバグっている可能性！");
             }
             return childList;
+        } else if(pos instanceof ClassElement) {
+            // 指定の要素と一致するものを抜き出す
+            let max = this.childList.length;
+            let i;
+            for (i=0; i<max; i++) {
+                if (pos == this.childList[i]) {
+                    return this.removeChild(i);
+                }
+            }
+            return null;
         } else {
             // 任意のひとつを抜き出す
             let child = this.childList[pos] || null;
@@ -51,7 +63,7 @@ class ClassElement extends ClassBase {
                 return child;
             }
             this.childList[pos]._element_assets.parent = null;
-            pos = typeof pos === 'undefined' ? this.childList.length: parseInt(pos);
+            pos = typeof pos === 'undefined' ? this.childList.length-1: parseInt(pos);
             this._element_assets.childList.splice(pos, 1);
             this.element.removeChild(child.element);
             return child;
@@ -93,6 +105,14 @@ class ClassElement extends ClassBase {
     // クリックイベントの削除
     offClick(func) {
         this._off('click', func);
+    }
+    // チェンジイベントの登録
+    onChange(func) {
+        this._on('change', func);
+    }
+    // チェンジイベントの削除
+    offChange(func) {
+        this._off('change', func);
     }
 
     // 管理下エレメントからのイベントを受け付ける
