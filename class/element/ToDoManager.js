@@ -30,10 +30,10 @@ class ClassToDoManager extends ClassElement {
         for (let data of dataManager.each) {
             switch(data.status) {
                 case ClassTaskData.STATUS_PLAN:
-                    planList.addItem(data);
+                    planList.initItem(data);
                 break;
                 case ClassTaskData.STATUS_DONE:
-                    doneList.addItem(data);
+                    doneList.initItem(data);
                 break;
                 default:
                     throw new Error(`指定されたステータス${data.status}が不正です。`);
@@ -199,7 +199,7 @@ class ClassToDoManager extends ClassElement {
                 }
                 if (minNum !== null) {
                     if (val.length < minNum) {
-                        result.error.push(`下限文字数[${minNum}]を下回っています。`);
+                        result.error.push(`下限文字数[${minNum}]を満たしていません。`);
                     }
                 }
             break;

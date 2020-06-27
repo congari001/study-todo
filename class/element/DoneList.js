@@ -19,21 +19,34 @@ class ClassDoneList extends ClassElement {
         ele.element.classList.add("done_list");
         return ele;
     }
+    // アイテム初期化
+    initItem(data, pos) {
+        pos = pos || 0;
+        let list = this._done_list_assets.list;
+        let item= new ClassDoneItem(data);
+        item.element.classList.add('init');
+        list.appendChild(item, pos);
+    }
     // アイテム追加
     addItem(data, pos) {
         pos = pos || 0;
         let list = this._done_list_assets.list;
         let item= new ClassDoneItem(data);
+        item.element.classList.add('fade_in');
         list.appendChild(item, pos);
     }
     // アイテム削除
     deleteItem(id) {
-        let pos, cnt=0;
+        let eles;
         let list = this._done_list_assets.list;
-        while ((pos = list.findChild(v => v.id == id)) !== null) {
-            list.removeChild(pos);
-            cnt++;
+        eles = list.findChildAll(v => v.id == id);
+        for (let i=0; i<eles.length; i++) {
+            let ele = eles[i];
+            ele.element.classList.add('fade_out');
+            setTimeout(((ele) => {
+                list.removeChild(ele);
+            }).bind(null, ele),150);
         }
-        return cnt;
+        return eles.length;
     }
 }

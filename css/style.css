@@ -52,6 +52,27 @@
     85%  { transform: scale(0.9, 1.2) translate(0, -0.04em); }
     100%  { transform: scale(1.2, 0.8) translate(0, 0.03em); }
 }
+.input_attention_message {
+    position: relative;
+    top: .5em;
+    left: 29em;
+    display: none;
+    margin: 1em 0;
+    padding: 2px 6px;
+    min-width: 120px;
+    max-width: 100%;
+    color: red;
+    font-size: 10px;
+    background: #f1daff;
+    z-index: 100;
+}
+.input_attention_message a {
+    margin: 0;
+    padding: 0;
+}
+.input_attention:hover + .input_attention_message {
+    display: inline-block;
+}
 .input_text:focus {
     border: 2px solid #30f000;
     outline: none;
@@ -248,4 +269,58 @@
 .list_item_button2:hover:before, .list_item_button2:hover:after {
     -webkit-transform: rotate(10deg);
     transform: rotate(10deg);
+}
+
+/* 初期化アニメ */
+.init{
+    animation-name:init;
+    animation-duration:0.06s;
+}
+
+@keyframes init{
+    0%{
+        transform: scaleY(0);
+    }
+    100%{
+        transform: scaleY(1);
+    }
+}
+
+/* ひょっこりアニメ */
+.fade_in{
+    animation-name:fade_in;
+    animation-duration:0.15s;
+}
+
+@keyframes fade_in{
+    0%{
+        transform: scaleY(0);
+        font-size: 0;
+        opacity: 0;
+    }
+    100%{
+        transform: scaleY(1);
+    }
+}
+
+/* ひゅんっアニメ */
+.fade_out{
+    animation-name:fade_out;
+    animation-duration:0.3s;
+}
+
+@keyframes fade_out{
+    0%{
+        transform: scaleY(1);
+    }
+    50%{
+        transform: scaleY(0);
+        font-size: 0;
+        opacity: 0;
+    }
+    100%{
+        transform: scaleY(0);
+        font-size: 0;
+        opacity: 0;
+    }
 }

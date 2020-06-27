@@ -1,5 +1,5 @@
 class ClassPlanItem extends ClassElement {
-    constructor(task) {
+    constructor(task,) {
         super("div");
         this.element.classList.add("list_item");
         this._plan_item_assets = {};

@@ -73,10 +73,20 @@ class ClassElement extends ClassBase {
     findChild(func) {
         for (let i=0;i<this.childList.length; i++) {
             if (func(this.childList[i])) {
-                return i;
+                return this.childList[i];
             }
         }
         return null;
+    }
+    // 子を全て検索する
+    findChildAll(func) {
+        let children = [];
+        for (let i=0;i<this.childList.length; i++) {
+            if (func(this.childList[i])) {
+                children.push(this.childList[i]);
+            }
+        }
+        return children;
     }
     // イベントの伝播に対応したイベント発行
     emit(ev_name, params, bubbling) {

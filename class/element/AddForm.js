@@ -41,9 +41,19 @@ class ClassAddForm extends ClassElement {
         return ele;
     }
     _createAttention() {
-        let ele = new ClassElement("a");
-        ele.element.classList.add("input_attention");
-        ele.element.innerText = "＊";
+        let ele = new ClassElement("div");
+        let mesframe = new ClassElement("div");
+        let mes = new ClassElement("a");
+        let kome = new ClassElement("a");
+        kome.element.classList.add("input_attention");
+        kome.element.innerText = "＊";
+        ele.appendChild(kome);
+        mesframe.appendChild(mes);
+        mesframe.element.classList.add("input_attention_message");
+        ele.appendChild(mesframe);
+        ele.message = (msg) => {
+            mes.element.innerText = msg;
+        };
         return ele;
     }
     _createAddButton() {
@@ -69,6 +79,11 @@ class ClassAddForm extends ClassElement {
     validated(result) {
         this.removeChild(this._add_form_assets.attentionElement);
         if (result.error.length) {
+            let msg = "";
+            for (let i=0; i<result.error.length; i++) {
+                msg += result.error[i] + "\r\n";
+            }
+            this._add_form_assets.attentionElement.message(msg);
             this.appendChild(this._add_form_assets.attentionElement);
         }
     }
